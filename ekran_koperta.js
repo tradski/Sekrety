@@ -234,6 +234,9 @@ function fallIntoMailbox() {
     envelopeY = height / 2;
   } else {
     envelopeFalling = false; // Stop animation when envelope is almost invisible
+    setTimeout(() => {
+      window.location.href = "https://domciaioliwcia.github.io/Secret-page/"; // Redirection to the next page
+    }, 500);
   }
 
   drawEnvelope(envelopeX, envelopeY, envelopeWidth, envelopeHeight, frameThickness, frameColor);
