@@ -20,6 +20,9 @@ const colors = {
   text: '#A8577E'
 };
 
+// Mailbox slot dimensions
+let mailboxX, mailboxY, mailboxWidth, mailboxHeight;
+
 function preload() {
   playwriteFont = loadFont('PlaywriteNL.ttf'); // Załaduj font PlaywriteNL
   tinyFont = loadFont('Tiny5.ttf'); // Załaduj font Tiny5
@@ -79,13 +82,19 @@ function drawPaper() {
 }
 
 function mousePressed() {
+  if (userInput.trim() === "") {
+    return; // Do nothing if the user input is empty
+  }
+
   if (!folded) {
     foldToEnvelope();
     folded = true;
   } else if (!shrink && !mailboxDisplayed) {
     shrink = true;
   } else if (mailboxDisplayed && !envelopeFalling) {
-    envelopeFalling = true;
+    if (mouseX > mailboxX && mouseX < mailboxX + mailboxWidth && mouseY > mailboxY && mouseY < mailboxY + mailboxHeight) {
+      envelopeFalling = true;
+    }
   }
 }
 
@@ -167,7 +176,11 @@ function drawMailboxSlot() {
   // Rysowanie prostokąta przypominającego wejście do skrzynki na listy
   fill(colors.mailbox);
   noStroke();
-  rect(width / 2 - envelopeWidth / 2, height / 2 - 10, envelopeWidth, 20);
+  mailboxWidth = envelopeWidth;
+  mailboxHeight = 20;
+  mailboxX = width / 2 - mailboxWidth / 2;
+  mailboxY = height / 2 - 10;
+  rect(mailboxX, mailboxY, mailboxWidth, mailboxHeight);
 
   // Dodaj napis "send your secret here"
   fill(colors.text);
