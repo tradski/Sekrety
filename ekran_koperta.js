@@ -8,6 +8,7 @@ let mailboxDisplayed = false;
 let envelopeFalling = false;
 let playwriteFont; // Zmienna do przechowywania fontu PlaywriteNL
 let tinyFont; // Zmienna do przechowywania fontu Tiny5
+let placeholderVisible = true; // Zmienna do zarządzania widocznością placeholdera
 
 // Kolory
 const colors = {
@@ -189,13 +190,29 @@ function drawMailboxSlot() {
 
 function drawPaperWithText() {
   drawPaper();
-  
+
   // Rysowanie tekstu na kartce
   fill(colors.text);
   noStroke();
   textSize(24);
   textAlign(CENTER, CENTER);
   text(userInput, width / 2, height / 2);
+
+  // Rysowanie placeholdera "write here"
+  if (placeholderVisible && userInput === "") {
+    fill(150); // Jasny kolor
+    textFont(tinyFont);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    text("write here", width / 2, height / 2 + 40);
+  } else {
+    // Rysowanie napisu "click to close"
+    fill(colors.background);
+    textFont(tinyFont);
+    textSize(24);
+    textAlign(CENTER, BOTTOM);
+    text("click to close", width / 2, height / 2 + 240);
+  }
 }
 
 function keyPressed() {
@@ -208,6 +225,7 @@ function keyPressed() {
       // Ignoruj klawisze funkcyjne
       if (keyCode !== SHIFT && keyCode !== LEFT_ARROW && keyCode !== RIGHT_ARROW && keyCode !== UP_ARROW && keyCode !== DOWN_ARROW) {
         userInput += key;
+        placeholderVisible = false; // Ukryj placeholder po rozpoczęciu pisania
       }
     }
     drawPaperWithText();
@@ -218,6 +236,7 @@ function keyTyped() {
   // Funkcja, która obsługuje wpisywanie znaków, w tym polskich liter i dużych liter z użyciem Shift
   if (inputActive && !folded) {
     userInput += key;
+    placeholderVisible = false; // Ukryj placeholder po rozpoczęciu pisania
     drawPaperWithText();
     return false; // Zatrzymuje domyślną akcję, aby uniknąć podwójnego wpisywania
   }
@@ -236,7 +255,7 @@ function fallIntoMailbox() {
     envelopeFalling = false; // Stop animation when envelope is almost invisible
     setTimeout(() => {
       window.location.href = "https://domciaioliwcia.github.io/Secret-page/"; // Redirection to the next page
-    }, 500);
+    }, 500); // Delay to ensure the final state is drawn
   }
 
   drawEnvelope(envelopeX, envelopeY, envelopeWidth, envelopeHeight, frameThickness, frameColor);
